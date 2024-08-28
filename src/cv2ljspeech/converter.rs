@@ -53,7 +53,5 @@ impl LJSpeech {
         Ok(ljs)
     }
 
-
-
 }
 
