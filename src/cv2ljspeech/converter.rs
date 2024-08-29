@@ -15,6 +15,7 @@ pub struct LJSpeech {
 #[derive(Debug)]
 pub enum LJSpeechError {
     DirError(String),
+    FileNotFoundError(String),
     OtherError(String),
 }
 
@@ -49,6 +50,14 @@ impl LJSpeech {
                 format!("Output location '{}' does not exist or is not a directory", output_location),
             ));
         }
+        for path in &abs_paths {
+            let abs_path = Path::new(path);
+            if !abs_path.exists() {
+                return Err(LJSpeechError::FileNotFoundError(format!("Data path '{}' does not exist", path),
+                ));
+            }
+        }
+
         let ljs = LJSpeech {
             abs_paths,
             dev,
