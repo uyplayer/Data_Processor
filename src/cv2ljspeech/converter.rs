@@ -1,7 +1,4 @@
-use std::collections::HashMap;
 use std::path::Path;
-use std::pin::Pin;
-use crate::cv2ljspeech::constants;
 
 pub struct LJSpeech {
     pub abs_paths: Vec<String>,
@@ -33,7 +30,7 @@ impl Default for LJSpeech {
 }
 
 impl LJSpeech {
-    pub fn new(abs_paths: Vec<String>,output_location: Option<String>,dev: Option<bool>,train: Option<bool>,test: Option<bool>,validated: Option<bool>) -> Result<Self, LJSpeechError> {
+    pub fn new(abs_paths: Vec<String>, output_location: Option<String>, dev: Option<bool>, train: Option<bool>, test: Option<bool>, validated: Option<bool>) -> Result<Self, LJSpeechError> {
         let dev = dev.unwrap_or(true);
         let train = train.unwrap_or(true);
         let test = test.unwrap_or(false);
