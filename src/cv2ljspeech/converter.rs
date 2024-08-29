@@ -1,57 +1,71 @@
 use std::collections::HashMap;
+use std::path::Path;
+use std::pin::Pin;
 use crate::cv2ljspeech::constants;
 
-
 pub struct LJSpeech {
-    abs_paths: Vec<String>,
-    files: Vec<String>,
-    output_file: HashMap<String, f32>,
+    pub abs_paths: Vec<String>,
+    pub dev: bool,
+    pub train: bool,
+    pub test: bool,
+    pub validated: bool,
+    output_location: String,
 }
 
 #[derive(Debug)]
 pub enum LJSpeechError {
-    SumExceedsLimit(f32),
+    DirError(String),
     OtherError(String),
 }
+
 impl Default for LJSpeech {
     fn default() -> Self {
-        let mut default_output = HashMap::new();
-        default_output.insert(String::from("training"), 0.8);
-        default_output.insert(String::from("validation"), 0.2);
         LJSpeech {
             abs_paths: Vec::new(),
-            files: Vec::new(),
-            output_file: default_output,
+            dev: true,
+            train: true,
+            test: true,
+            validated: true,
+            output_location: ".".to_string(),
         }
     }
 }
 
-impl std::fmt::Display for LJSpeechError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            LJSpeechError::SumExceedsLimit(total_sum) => {
-                write!(f, "Error: The sum of output_file values exceeds 1.0. Total: {}", total_sum)
-            }
-            LJSpeechError::OtherError(msg) => {
-                write!(f, "Error: {}", msg)
-            }
-        }
-    }
-}
 impl LJSpeech {
-    pub fn new(abs_paths: Vec<String>, files: Vec<String>, output_file: HashMap<String, f32>) ->  Result<Self, LJSpeechError>{
-        let total_sum = output_file.values().sum();
-        if total_sum > 1.0 {
-            return Err(LJSpeechError::SumExceedsLimit(total_sum));
-
+    pub fn new(abs_paths: Vec<String>,output_location: Option<String>,dev: Option<bool>,train: Option<bool>,test: Option<bool>,validated: Option<bool>) -> Result<Self, LJSpeechError> {
+        let dev = dev.unwrap_or(true);
+        let train = train.unwrap_or(true);
+        let test = test.unwrap_or(false);
+        let validated = validated.unwrap_or(false);
+        let output_location = output_location.unwrap_or_else(|| ".".to_string());
+        if !(dev || train || test || validated) {
+            return Err(LJSpeechError::OtherError(
+                "At least one of dev, train, test, or validated must be true".to_string(),
+            ));
+        }
+        let output_path = Path::new(&output_location);
+        if !output_path.exists() || !output_path.is_dir() {
+            return Err(LJSpeechError::DirError(
+                format!("Output location '{}' does not exist or is not a directory", output_location),
+            ));
         }
         let ljs = LJSpeech {
             abs_paths,
-            files,
-            output_file,
+            dev,
+            train,
+            test,
+            validated,
+            output_location,
         };
         Ok(ljs)
     }
-
+    pub fn print_info(&self) {
+        println!("LJSpeech Information:");
+        println!("  Paths: {:?}", self.abs_paths);
+        println!("  Output Location: {}", self.output_location);
+        println!("  Dev Mode: {}", self.dev);
+        println!("  Train Mode: {}", self.train);
+        println!("  Test Mode: {}", self.test);
+        println!("  Validated: {}", self.validated);
+    }
 }
-
