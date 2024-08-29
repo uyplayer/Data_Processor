@@ -9,7 +9,7 @@ pub struct LJSpeech {
     pub train: bool,
     pub test: bool,
     pub validated: bool,
-    output_location: String,
+    pub output_location: String,
 }
 
 #[derive(Debug)]
