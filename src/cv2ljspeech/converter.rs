@@ -225,7 +225,6 @@ mod tests {
     use std::sync::{Arc, Mutex};
 
     #[test]
-    #[ignore]
     fn ljs_test() {
         let paths: Vec<String> = vec![
             r"E:\MachineLearning\datasets\mozilacommoncoive\original_data\cv-corpus-11.0-2022-09-21-ug\cv-corpus-11.0-2022-09-21\ug".to_string(),
@@ -238,7 +237,7 @@ mod tests {
             r"E:\MachineLearning\datasets\mozilacommoncoive\original_data\cv-corpus-18.0-2024-06-14-ug\cv-corpus-18.0-2024-06-14\ug".to_string()
         ];
 
-        let out_dir = r"C:\Users\uyplayer\Downloads";
+        let out_dir = r"E:\MachineLearning\news_data";
         let ljs = LJSpeech {
             abs_paths: paths,
             dev: true,

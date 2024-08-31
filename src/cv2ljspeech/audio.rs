@@ -1,10 +1,10 @@
-use std::fs;
-use std::io;
-use std::path::Path;
-use std::process::Command;
+use std::{fs, io, path::Path, process::Command};
+use std::sync::{Arc, Mutex};
+use std::thread;
 use crate::cv2ljspeech::converter::LJSpeechError;
 use crate::cv2ljspeech::constants;
 
+#[derive(Clone)]
 pub struct Audio {
     pub abs_paths: Vec<String>,
 }
@@ -22,12 +22,30 @@ impl Audio {
     }
 
     pub fn read_dir(&self) {
-        for file_dir in &self.abs_paths {
-            println!("Start Handling {:?}", file_dir);
-            if let Err(e) = self.read_audio_dir(file_dir) {
-                eprintln!("Error reading files in {:?}: {}", file_dir, e);
-            }
-            println!("End Handling {:?}", file_dir);
+        let abs_paths = Arc::new(self.abs_paths.clone());
+        let mut handles = vec![];
+
+        for file_dir in abs_paths.iter() {
+            let file_dir = file_dir.clone();
+            let audio = Arc::new(Mutex::new(self.clone()));
+
+            let handle = thread::spawn({
+                let audio = Arc::clone(&audio);
+                move || {
+                    let audio = audio.lock().unwrap();
+                    println!("Start Handling {:?}", file_dir);
+                    if let Err(e) = audio.read_audio_dir(&file_dir) {
+                        eprintln!("Error reading files in {:?}: {}", file_dir, e);
+                    }
+                    println!("End Handling {:?}", file_dir);
+                }
+            });
+
+            handles.push(handle);
+        }
+
+        for handle in handles {
+            handle.join().expect("Thread panicked");
         }
     }
 
