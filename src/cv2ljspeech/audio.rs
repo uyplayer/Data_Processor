@@ -97,8 +97,9 @@ impl Audio {
         }
     }
 
-    fn convert_mp3_to_wav(&self, input_path: &Path, output_path: &Path) -> io::Result<()> {
+    pub fn convert_mp3_to_wav(&self, input_path: &Path, output_path: &Path) -> io::Result<()> {
         let status = Command::new("ffmpeg")
+            .arg("-y")
             .arg("-i")
             .arg(input_path)
             .arg("-ar")
