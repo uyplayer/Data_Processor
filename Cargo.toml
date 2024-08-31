@@ -9,7 +9,7 @@ csv = "1.1"
 
 
 [lib]
-name = "Data_Processor"
+name = "SpeechForge"
 path = "src/lib.rs"
 crate-type = ["lib"]
 

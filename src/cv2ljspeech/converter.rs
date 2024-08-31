@@ -21,6 +21,7 @@ pub struct LJSpeech {
 pub enum LJSpeechError {
     DirError(String),
     FileNotFoundError(String),
+    FormatError(String),
     OtherError(String),
 }
 
@@ -207,6 +208,15 @@ impl LJSpeech {
         }
         Ok(())
     }
+    pub fn print_info(&self) {
+        println!("LJSpeech Information:");
+        println!("  Paths: {:?}", self.abs_paths);
+        println!("  Output Location: {}", self.output_location);
+        println!("  Dev Mode: {}", self.dev);
+        println!("  Train Mode: {}", self.train);
+        println!("  Test Mode: {}", self.test);
+        println!("  Validated: {}", self.validated);
+    }
 }
 
 #[cfg(test)]
@@ -215,6 +225,7 @@ mod tests {
     use std::sync::{Arc, Mutex};
 
     #[test]
+    #[ignore]
     fn ljs_test() {
         let paths: Vec<String> = vec![
             r"E:\MachineLearning\datasets\mozilacommoncoive\original_data\cv-corpus-11.0-2022-09-21-ug\cv-corpus-11.0-2022-09-21\ug".to_string(),
@@ -240,7 +251,7 @@ mod tests {
             index_test: Arc::new(Mutex::new(0)),
             index_validated: Arc::new(Mutex::new(0)),
         };
-
+        ljs.print_info();
         ljs.make_metadata().unwrap();
     }
 }
