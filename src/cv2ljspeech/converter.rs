@@ -242,9 +242,9 @@ mod tests {
         let ljs = LJSpeech {
             abs_paths: paths,
             dev: true,
-            train: true,
-            test: true,
-            validated: true,
+            train: false,
+            test: false,
+            validated: false,
             output_location: out_dir.to_string(),
             index_dev: Arc::new(Mutex::new(0)),
             index_train: Arc::new(Mutex::new(0)),

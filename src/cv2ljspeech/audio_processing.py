@@ -7,6 +7,8 @@ from scipy.io import wavfile
 
 
 def normalize_audio(data):
+    if data.size == 0:
+        raise ValueError("Cannot normalize empty data")
     max_val = np.max(np.abs(data))
     if max_val == 0:
         return data
@@ -23,12 +25,21 @@ def remove_silence(input_path: str):
     trimmed_sound.export(trimmed_temp_path, format="wav")
 
     sample_rate, data = wavfile.read(trimmed_temp_path)
-    reduced_noise = nr.reduce_noise(y=data, sr=sample_rate)
-    normalized_noise = normalize_audio(reduced_noise)
 
+    if data.size == 0:
+        print(f"Warning: No data in file {input_path}")
+        os.remove(trimmed_temp_path)
+        return
+
+    reduced_noise = nr.reduce_noise(y=data, sr=sample_rate)
+
+    if reduced_noise.size == 0:
+        print(f"Warning: No noise reduction in file {input_path}")
+        os.remove(trimmed_temp_path)
+        return
+    normalized_noise = normalize_audio(reduced_noise)
     wavfile.write(input_path, sample_rate, np.int16(normalized_noise * 32767))
     print(f"Noise-reduced audio saved to {input_path}")
-
     os.remove(trimmed_temp_path)
 
 
@@ -37,7 +48,6 @@ def dir_fun(dirs: list[str]):
         if not os.path.isdir(item):
             print(f"Skipping non-directory {item}")
             continue
-
         for audio_file in os.listdir(item):
             file_path = os.path.join(item, audio_file)
             if os.path.isfile(file_path):
@@ -47,8 +57,8 @@ def dir_fun(dirs: list[str]):
 if __name__ == "__main__":
     dir_list = [
         r"E:\MachineLearning\news_data\dev_clips",
-        r"E:\MachineLearning\news_data\test_clips",
-        r"E:\MachineLearning\news_data\train_clips",
-        r"E:\MachineLearning\news_data\validated_clips",
+        # r"E:\MachineLearning\news_data\test_clips",
+        # r"E:\MachineLearning\news_data\train_clips",
+        # r"E:\MachineLearning\news_data\validated_clips",
     ]
     dir_fun(dir_list)

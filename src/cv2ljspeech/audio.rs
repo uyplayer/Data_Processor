@@ -128,10 +128,10 @@ mod tests {
     #[ignore]
     fn audio_test() {
         let paths: Vec<String> = vec![
-            // r"E:\MachineLearning\news_data\dev_clips".to_string(),
+            r"E:\MachineLearning\news_data\dev_clips".to_string(),
             // r"E:\MachineLearning\news_data\test_clips".to_string(),
             // r"E:\MachineLearning\news_data\train_clips".to_string(),
-            r"E:\MachineLearning\news_data\validated_clips".to_string(),
+            // r"E:\MachineLearning\news_data\validated_clips".to_string(),
         ];
         let audio = Audio { abs_paths: paths };
 
