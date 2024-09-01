@@ -225,6 +225,7 @@ mod tests {
     use std::sync::{Arc, Mutex};
 
     #[test]
+    #[ignore]
     fn ljs_test() {
         let paths: Vec<String> = vec![
             r"E:\MachineLearning\datasets\mozilacommoncoive\original_data\cv-corpus-11.0-2022-09-21-ug\cv-corpus-11.0-2022-09-21\ug".to_string(),

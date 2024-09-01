@@ -125,6 +125,7 @@ mod tests {
     use crate::cv2ljspeech::audio::Audio;
 
     #[test]
+    #[ignore]
     fn audio_test() {
         let paths: Vec<String> = vec![
             // r"E:\MachineLearning\news_data\dev_clips".to_string(),
